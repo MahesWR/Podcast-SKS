@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKS Admin - Podcast Swara Karmany Smansa</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <!-- Animated Mesh Background -->
+    <div class="mesh-bg"></div>
+    <div class="mesh-bg-overlay"></div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1>Admin Access</h1>
+            <p>Silakan masukkan password untuk mengelola konten.</p>
+            <form id="login-form">
+                <input type="password" id="admin-password" placeholder="Password Access" required>
+                <button type="submit" class="btn btn-primary">Authenticate</button>
+                <p id="login-error" style="color: #ef4444; margin-top: 1rem; display: none;">Password salah!</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="admin-main-content" style="display: none;">
+        <nav class="admin-navbar">
+            <div class="nav-container">
+                <a href="index.html" class="logo"><span>SKS</span> Admin</a>
+                <div class="admin-user">
+                    <a href="index.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-external-link-alt"></i> Lihat Website</a>
+                    <span><i class="fas fa-user-shield"></i> Master Admin</span>
+                    <button onclick="logout()" class="btn-logout" title="Log Out"><i class="fas fa-power-off"></i></button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="admin-container">
+            <div class="admin-tabs-nav">
+                <button class="tab-btn active" data-tab="tab-dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard Analytics</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-episodes">
+                    <i class="fas fa-microphone-alt"></i>
+                    <span>Episode Repository</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-settings">
+                    <i class="fas fa-edit"></i>
+                    <span>Content Library</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-hosts">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Host Management</span>
+                </button>
+            </div>
+
+            <div class="tab-viewport">
+                <!-- Tab: Dashboard -->
+                <div id="tab-dashboard" class="tab-content active">
+                    <header class="admin-header">
+                        <div>
+                            <h1>Analytics Overview</h1>
+                            <p>Wawasan performa konten Podcast SKS.</p>
+                        </div>
+                    </header>
+                    <section class="admin-content">
+                        <div class="analytics-grid">
+                            <div class="glass-card stat-card">
+                                <i class="fas fa-play-circle"></i>
+                                <div class="stat-info">
+                                    <h3 id="stat-total-ep">0</h3>
+                                    <p>Total Episode</p>
+                                </div>
+                            </div>
+                            <div class="glass-card stat-card">
+                                <i class="fas fa-heart"></i>
+                                <div class="stat-info">
+                                    <h3 id="stat-total-likes">0</h3>
+                                    <p>Total Likes</p>
+                                </div>
+                            </div>
+                            <div class="glass-card stat-card">
+                                <i class="fas fa-user-friends"></i>
+                                <div class="stat-info">
+                                    <h3 id="stat-total-hosts">0</h3>
+                                    <p>Total Host</p>
+                                </div>
+                            </div>
+                            <div class="glass-card stat-card">
+                                <i class="fas fa-fire"></i>
+                                <div class="stat-info">
+                                    <h3 id="stat-top-episode" style="font-size: 1.2rem;">-</h3>
+                                    <p>Episode Terpopuler</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card" style="margin-top: 2rem; padding: 2rem;">
+                            <h3><i class="fas fa-trophy" style="color: gold;"></i> Leaderboard Episode</h3>
+                            <div class="table-container" style="margin-top: 1rem;">
+                                <table class="episodes-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Judul</th>
+                                            <th>Likes</th>
+                                            <th>Popularitas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="analytics-leaderboard">
+                                        <!-- Data injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="glass-card" style="margin-top: 2rem; padding: 2rem;">
+                            <h3><i class="fas fa-history" style="color: var(--primary);"></i> Riwayat Like Terbaru</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Melihat detail asal like (Perangkat & IP).</p>
+                            <div class="table-container">
+                                <table class="episodes-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Waktu</th>
+                                            <th>Episode</th>
+                                            <th>Perangkat</th>
+                                            <th>Lokasi (IP)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="like-logs-body">
+                                        <!-- Data injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Tab: Episodes -->
+                <div id="tab-episodes" class="tab-content">
+                    <header class="admin-header">
+                        <div>
+                            <h1>Episode Library</h1>
+                            <p>Kelola semua konten audio dan video podcast.</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="btn-add-episode"><i class="fas fa-plus"></i> New Episode</button>
+                        </div>
+                    </header>
+
+                    <section class="admin-content">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="admin-search" placeholder="Cari episode...">
+                                </div>
+                                <select id="admin-filter" class="filter-select">
+                                    <option value="all">Semua Status</option>
+                                    <option value="published">Published</option>
+                                    <option value="coming-soon">Coming Soon</option>
+                                </select>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="episodes-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Urutan</th>
+                                            <th>Cover</th>
+                                            <th>Info Episode</th>
+                                            <th>Tag & Status</th>
+                                            <th>Likes</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="episodes-table-body">
+                                        <!-- Data injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Tab: Settings -->
+                <div id="tab-settings" class="tab-content">
+                    <header class="admin-header">
+                        <div>
+                            <h1>Site Content Manager</h1>
+                            <p>Sesuaikan semua tulisan yang muncul di halaman utama.</p>
+                        </div>
+                    </header>
+                    <section class="admin-content">
+                        <div class="settings-grid">
+                            <!-- Navigasi -->
+                            <div class="glass-card">
+                                <h3 style="margin-bottom: 1.5rem; color: var(--primary);"><i class="fas fa-compass"></i> Menu Navigasi</h3>
+                                <div class="form-group"><label>Beranda</label><input type="text" data-key="nav_home"></div>
+                                <div class="form-group"><label>Tentang</label><input type="text" data-key="nav_about"></div>
+                                <div class="form-group"><label>Episode</label><input type="text" data-key="nav_episode"></div>
+                                <div class="form-group"><label>Host</label><input type="text" data-key="nav_host"></div>
+                            </div>
+                            <!-- Hero Section -->
+                            <div class="glass-card">
+                                <h3 style="margin-bottom: 1.5rem; color: var(--primary);"><i class="fas fa-home"></i> Hero Section</h3>
+                                <div class="form-group"><label>Judul Utama</label><input type="text" data-key="hero_title"></div>
+                                <div class="form-group"><label>Sub-judul</label><input type="text" data-key="hero_subtitle"></div>
+                                <div class="form-group"><label>Deskripsi</label><textarea data-key="hero_desc" rows="3"></textarea></div>
+                                <div class="form-row">
+                                    <div class="form-group" style="flex: 1;"><label>Tombol Play</label><input type="text" data-key="hero_btn_play"></div>
+                                    <div class="form-group" style="flex: 1;"><label>Tombol Spotify</label><input type="text" data-key="hero_btn_spotify"></div>
+                                </div>
+                            </div>
+                            <!-- About Section -->
+                            <div class="glass-card settings-full">
+                                <h3 style="margin-bottom: 1.5rem; color: var(--primary);"><i class="fas fa-info-circle"></i> About Section</h3>
+                                <div class="form-group"><label>Judul Bagian</label><input type="text" data-key="about_title"></div>
+                                <div class="form-group"><label>Deskripsi (Mendukung HTML)</label><textarea data-key="about_desc" rows="4"></textarea></div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                                    <div class="form-group"><label>Stat 1 (Nilai)</label><input type="text" data-key="about_stat1_value"><label>Stat 1 (Label)</label><input type="text" data-key="about_stat1_label"></div>
+                                    <div class="form-group"><label>Stat 2 (Nilai)</label><input type="text" data-key="about_stat2_value"><label>Stat 2 (Label)</label><input type="text" data-key="about_stat2_label"></div>
+                                    <div class="form-group">
+                                        <label>Stat 3 (Total Menyukai - Otomatis)</label>
+                                        <input type="text" data-key="about_stat3_value" readonly style="background: rgba(255,255,255,0.05); cursor: not-allowed; color: var(--text-muted);">
+                                        <label>Stat 3 (Label)</label>
+                                        <input type="text" data-key="about_stat3_label">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Others -->
+                            <div class="glass-card">
+                                <h3 style="margin-bottom: 1.5rem; color: var(--primary);"><i class="fas fa-heading"></i> Bagian Lainnya</h3>
+                                <div class="form-group"><label>Judul Episode</label><input type="text" data-key="episode_title"></div>
+                                <div class="form-group"><label>Judul Host</label><input type="text" data-key="host_title"></div>
+                            </div>
+                            <div class="glass-card">
+                                <h3 style="margin-bottom: 1.5rem; color: var(--primary);"><i class="fas fa-layer-group"></i> Footer</h3>
+                                <div class="form-group"><label>Teks Copyright</label><input type="text" data-key="footer_text"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Tab: Hosts -->
+                <div id="tab-hosts" class="tab-content">
+                    <header class="admin-header">
+                        <div>
+                            <h1>Host Directory</h1>
+                            <p>Tambah atau kurangi host andalan Swara Karmany Smansa.</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="btn-add-host"><i class="fas fa-plus"></i> Host Baru</button>
+                        </div>
+                    </header>
+                    <section class="admin-content">
+                        <div class="table-card">
+                            <div class="table-container">
+                                <table class="episodes-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Urutan</th>
+                                            <th>Foto</th>
+                                            <th>Nama</th>
+                                            <th>Role</th>
+                                            <th>Link IG</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="hosts-table-body">
+                                        <!-- Data host injected here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Episode -->
+    <div class="modal" id="episode-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Tambah Episode Baru</h2>
+                <button id="btn-close-modal" class="btn-icon"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="episode-form">
+                <input type="hidden" id="ep-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nomor Episode</label>
+                        <input type="text" id="ep-number" placeholder="Contoh: Ep. 1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="text" id="ep-date" placeholder="Contoh: 12 Feb 2026" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" id="ep-title" placeholder="Judul Episode" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="ep-desc" rows="3" placeholder="Deskripsi singkat episode..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL Gambar Cover</label>
+                    <div class="input-with-upload">
+                        <input type="text" id="ep-image" placeholder="Path, URL luar, atau Link Google Drive" required>
+                        <div class="input-actions">
+                            <button type="button" class="btn-icon-sm" onclick="promptDriveLink('ep-image')" title="Gunakan Link Google Drive"><i class="fab fa-google-drive"></i></button>
+                            <label for="upload-image" class="btn-upload" title="Unggah File"><i class="fas fa-upload"></i></label>
+                            <input type="file" id="upload-image" hidden accept="image/*">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tags (Pisahkan dengan koma)</label>
+                    <input type="text" id="ep-tags" placeholder="Contoh: Inspirasi, Pendidikan">
+                </div>
+                <div class="form-group">
+                    <label>Link Audio/Spotify (Source)</label>
+                    <div class="input-with-upload">
+                        <input type="text" id="ep-audio" placeholder="Link file .mp3 atau Spotify Embed URL">
+                        <div class="input-actions">
+                            <label for="upload-audio" class="btn-upload" title="Unggah File Audio"><i class="fas fa-file-audio"></i></label>
+                            <input type="file" id="upload-audio" hidden accept="audio/*">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Link YouTube</label>
+                        <input type="text" id="ep-youtube" placeholder="https://youtube.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Link Spotify Page</label>
+                        <input type="text" id="ep-spotify" placeholder="https://open.spotify.com/...">
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top: 1rem;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="ep-featured">
+                        <label for="ep-featured">Featured Episode</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="ep-coming-soon">
+                        <label for="ep-coming-soon">Coming Soon</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="btn-cancel">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Episode</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Host -->
+    <div class="modal" id="host-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="host-modal-title">Tambah Host Baru</h2>
+                <button id="btn-close-host-modal" class="btn-icon"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="host-form">
+                <input type="hidden" id="host-id">
+                <div class="form-group">
+                    <label>Nama Host</label>
+                    <input type="text" id="host-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Role / Jabatan</label>
+                    <input type="text" id="host-role" required>
+                </div>
+                <div class="form-group">
+                    <label>Foto Host (URL/Path)</label>
+                    <div class="input-with-upload">
+                        <input type="text" id="host-image" placeholder="Path, URL luar, atau Link Google Drive" required>
+                        <div class="input-actions">
+                            <button type="button" class="btn-icon-sm" onclick="promptDriveLink('host-image')" title="Gunakan Link Google Drive"><i class="fab fa-google-drive"></i></button>
+                            <label for="upload-host-image" class="btn-upload" title="Unggah File"><i class="fas fa-upload"></i></label>
+                            <input type="file" id="upload-host-image" hidden accept="image/*">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Link Instagram</label>
+                    <input type="text" id="host-ig">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-host">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Host</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Save Bar (Sticky) -->
+    <div id="save-bar" class="save-bar">
+        <div>
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Ada perubahan yang belum disimpan.</span>
+        </div>
+        <div class="save-bar-actions">
+            <button onclick="revertChanges()" class="btn btn-outline btn-small">Batal Perubahan</button>
+            <button id="btn-save-changes" class="btn btn-primary btn-small">Terapkan Perubahan</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
